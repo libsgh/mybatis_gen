@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <title>Mybatis代码生成器</title>
+    <meta charset="UTF-8">
+    <link href='https://fonts.loli.net/css?family=Roboto:100,300,400,500,700,900' rel='stylesheet'>
+    <link href="https://cdnjs.loli.net/ajax/libs/MaterialDesign-Webfont/6.9.96/css/materialdesignicons.min.css"
+          rel="stylesheet">
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/vuetify/2.6.3/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+<v-app id="app">
+    <v-app-bar
+            app
+            color="indigo"
+            dark
+    >
+        <v-toolbar-title style="width: 300px">Mybatis代码生成器</v-toolbar-title>
+
+        <v-tabs align-with-title v-model="tab">
+            <v-tab href="#config">
+                <v-icon left dark>mdi-cog-outline</v-icon>
+                配置
+            </v-tab>
+            <v-tab href="#preview">
+                <v-icon left dark>mdi-file-eye</v-icon>
+                预览
+            </v-tab>
+            <v-tab href="#download">
+                <v-icon left dark>mdi-cloud-download</v-icon>
+                文件下载
+            </v-tab>
+        </v-tabs>
+    </v-app-bar>
+
+    <v-main>
+        <v-container>
+            <v-row no-gutters>
+                <v-col md="8" offset-md="2">
+                    <v-alert
+                            text
+                            dense
+                            color="teal"
+                            icon="mdi-clock-fast"
+                            border="left"
+                    >
+                        配置及预览内容会暂存至本地浏览器，服务器不会长时间保存您的文件，请及时下载。
+                    </v-alert>
+                    <v-tabs-items v-model="tab" class="justify-center">
+                        <v-tab-item id="config">
+                            <v-flex>
+                            <v-container fluid fill-height>
+                                <v-row align="center" justify="center">
+                                    <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                        Mybatis生成模式：
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-radio-group
+                                                v-model="gen_config.gen_type"
+                                                row
+                                        >
+                                            <v-radio
+                                                    label="标准SQL"
+                                                    value="MyBatis3"
+                                                    def
+                                            ></v-radio>
+                                            <v-radio
+                                                    label="简单SQL"
+                                                    value="MyBatis3Simple"
+                                            ></v-radio>
+                                            <v-radio
+                                                    label="动态SQL"
+                                                    value="MyBatis3DynamicSql"
+                                            ></v-radio>
+                                        </v-radio-group>
+                                    </v-col>
+                                </v-row>
+                                <v-row align="center" justify="center">
+                                    <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                        是否生成Example类（仅标准SQL有效）：
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-radio-group
+                                                v-model="gen_config.is_gen_example"
+                                                row
+                                        >
+                                            <v-radio
+                                                    label="是"
+                                                    value="Y"
+                                                    def
+                                            ></v-radio>
+                                            <v-radio
+                                                    label="否"
+                                                    value="N"
+                                            ></v-radio>
+                                        </v-radio-group>
+                                    </v-col>
+                                </v-row>
+                                <v-row align="center" justify="center">
+                                    <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                        Java8日期时间（JSR310）：
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-radio-group
+                                                v-model="gen_config.is_jsr310"
+                                                row
+                                        >
+                                            <v-radio
+                                                    label="是"
+                                                    value="Y"
+                                                    def
+                                            ></v-radio>
+                                            <v-radio
+                                                    label="否"
+                                                    value="N"
+                                            ></v-radio>
+                                        </v-radio-group>
+                                    </v-col>
+                                </v-row>
+                                <v-row align="center" justify="center">
+                                    <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                        使用插件：
+                                    </v-col>
+                                    <v-col>
+                                        <v-checkbox v-model="gen_config.plugin" label="注释" color="red" value="note"></v-checkbox>
+                                    </v-col>
+                                    <v-col>
+                                        <v-checkbox v-model="gen_config.plugin" label="lombok" color="red" value="lombok"></v-checkbox>
+                                    </v-col>
+                                    <v-col>
+                                        <v-checkbox v-model="gen_config.plugin" label="swagger" color="red" value="swagger"></v-checkbox>
+                                    </v-col>
+                                    <v-col>
+                                        <v-checkbox v-model="gen_config.plugin" label="mapper注解" color="red" value="ann"></v-checkbox>
+                                    </v-col>
+                                    <v-col>
+                                        <v-checkbox v-model="gen_config.plugin" label="类序列化" color="red" value="ser"></v-checkbox>
+                                    </v-col>
+                                </v-row>
+                                <v-row no-gutters>
+                                    <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                        输出：
+                                    </v-col>
+                                    <v-col cols="2">
+                                        <v-text-field
+                                                v-model="gen_config.ignore_prefix"
+                                                label="忽略前缀"
+                                                outlined
+                                                clearable
+                                                style="margin: 5px"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <v-text-field
+                                                v-model="gen_config.default_model_package_name"
+                                                label="Model包名"
+                                                outlined
+                                                clearable
+                                                style="margin: 5px"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <v-text-field
+                                                v-model="gen_config.default_mapper_package_name"
+                                                label="Mapper包名"
+                                                outlined
+                                                clearable
+                                                style="margin: 5px"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row no-gutters>
+                                    <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                        建表语句：
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-textarea
+                                                solo
+                                                v-model="gen_config.sql"
+                                                label="仅支持MySQL"
+                                                rows=9"
+                                                style="margin: 5px"
+                                        ></v-textarea>
+                                    </v-col>
+                                </v-row>
+                                <v-row no-gutters>
+                                    <v-col cols="4">
+                                    </v-col>
+                                    <v-col cols="8">
+                                        <v-btn
+                                                depressed
+                                                color="pink darken-2"
+                                                class="ma-2 white--text"
+                                                @click="reset($event)"
+                                        >
+                                            <v-icon left dark>mdi-backup-restore</v-icon>
+                                            重置
+                                        </v-btn>
+                                        <v-btn
+                                                depressed
+                                                :loading="loading1"
+                                                :disabled="loading1"
+                                                color="orange darken-2"
+                                                class="ma-2 white--text"
+                                                @click="gen('preview', $event)"
+                                        >
+                                            <v-icon left dark>mdi-file-eye</v-icon>
+                                            预览
+                                        </v-btn>
+                                        <v-btn
+                                                depressed
+                                                :loading="loading2"
+                                                :disabled="loading2"
+                                                color="indigo"
+                                                class="ma-2 white--text"
+                                                @click="gen('download', $event)"
+                                        >
+                                            <v-icon left dark>mdi-cloud-download</v-icon>
+                                            下载
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                            </v-flex>
+                        </v-tab-item>
+                        <v-tab-item id="preview">
+                            <v-row no-gutters>
+                                <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                    Java Model：
+                                </v-col>
+                                <v-col cols="8">
+                                    <v-textarea
+                                            solo
+                                            v-model="content.java_model"
+                                            label=""
+                                            rows=20"
+                                            style="margin: 5px"
+                                    ></v-textarea>
+                                </v-col>
+                            </v-row>
+                            <v-row no-gutters v-show="gen_config.is_gen_example=='Y'">
+                                <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                    Java Example：
+                                </v-col>
+                                <v-col cols="8">
+                                    <v-textarea
+                                            solo
+                                            v-model="content.java_example"
+                                            label=""
+                                            rows=20"
+                                            style="margin: 5px"
+                                    ></v-textarea>
+                                </v-col>
+                            </v-row>
+                            <v-row no-gutters>
+                                <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                    Java Mapper：
+                                </v-col>
+                                <v-col cols="8">
+                                    <v-textarea
+                                            solo
+                                            v-model="content.java_mapper"
+                                            rows=20"
+                                            style="margin: 5px"
+                                    ></v-textarea>
+                                </v-col>
+                            </v-row>
+                            <v-row no-gutters>
+                                <v-col v-if="gen_config.gen_type=='MyBatis3DynamicSql'" cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                    动态SQL Support：
+                                </v-col>
+                                <v-col v-else cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                    XML Mapper：
+                                </v-col>
+                                <v-col v-if="gen_config.gen_type=='MyBatis3DynamicSql'" cols="8">
+                                    <v-textarea
+                                            solo
+                                            v-model="content.dynamic_sql"
+                                            rows=20"
+                                            style="margin: 5px"
+                                    ></v-textarea>
+                                </v-col>
+                                <v-col v-else cols="8">
+                                    <v-textarea
+                                            solo
+                                            v-model="content.xml_mapper"
+                                            rows=20"
+                                            style="margin: 5px"
+                                    ></v-textarea>
+                                </v-col>
+                            </v-row>
+                        </v-tab-item>
+                        <v-tab-item id="download">
+                            <v-simple-table>
+                                <template v-slot:default>
+                                    <thead>
+                                    <tr>
+                                        <th class="text-left">
+                                            文件名称
+                                        </th>
+                                        <th class="text-left">
+                                            文件大小
+                                        </th>
+                                        <th class="text-left">
+                                            修改时间
+                                        </th>
+                                        <th class="text-left">
+                                            下载
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr
+                                            v-for="file in files"
+                                            :key="file.name"
+                                    >
+                                        <td><v-icon>mdi-{{ file.icon }}</v-icon><a :href="`/api/preview/`+file.path" class="text-decoration-none" target="_blank">{{ file.name }}</a></td>
+                                        <td>{{ file.size | sizeF}}</td>
+                                        <td>{{ file.modif_time }}</td>
+                                        <td><v-btn
+                                                class="ma-2"
+                                                text
+                                                icon
+                                                :href="`/api/download/`+file.path"
+                                                color="indigo lighten-2"
+                                        >
+                                            <v-icon>mdi-cloud-download</v-icon>
+                                        </v-btn>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </template>
+                            </v-simple-table>
+                        </v-tab-item>
+                    </v-tabs-items>
+                </v-col>
+            </v-row>
+            <v-snackbar v-model="snackbar">
+                {{ msg }}
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                            color="pink"
+                            icon
+                            v-bind="attrs"
+                            @click="snackbar = false">
+                        <v-icon>mdi-close-circle</v-icon>
+                    </v-btn>
+                </template>
+            </v-snackbar>
+        </v-container>
+    </v-main>
+    <v-footer padless color="#FFFFFF">
+        <v-col class="text-center" cols="12">
+            © {{ new Date().getFullYear() }} <strong>Libs</strong>. All rights reserved.
+        </v-col>
+    </v-footer>
+</v-app>
+<script src="https://cdnjs.loli.net/ajax/libs/vue/2.7.7/vue.min.js"></script>
+<script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/vuetify/2.6.3/vuetify.min.js"></script>
+<script src="https://cdnjs.loli.net/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>

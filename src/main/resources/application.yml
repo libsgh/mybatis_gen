@@ -1,0 +1,19 @@
+server:
+  port: 8080
+spring:
+  freemarker:
+    charset: UTF-8
+    suffix: .html
+    content-type: text/html
+    enabled: true
+    cache: false
+    template-loader-path: classpath:/templates/
+    request-context-attribute: req
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${jdbc_url}
+    username: ${jdbc_username}
+    password: ${jdbc_password}
+  main:
+    allow-circular-references: true
+gen_path: D:\data\gen
