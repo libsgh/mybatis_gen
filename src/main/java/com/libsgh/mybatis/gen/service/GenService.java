@@ -341,4 +341,17 @@ public class GenService {
         Map<TableStat.Name, TableStat> tableStatMap = visitor.getTables();
         return tableStatMap.entrySet().parallelStream().map(r->r.getKey().getName()).collect(Collectors.toList());
     }
+
+    public Map<String, Object> getPrefix(String sql) {
+        Map<String, Object> map = new HashMap<>();
+        List<String> tables = this.getTableNameFromCreateSql(sql);
+        if(tables.size() > 1){
+            map.put("code", -1);
+            map.put("msg", "检测到多条SQL语句");
+        }else{
+            String tableName = tables.get(0);
+            StrUtil.subBefore(tableName, "_", true);
+        }
+        return map;
+    }
 }

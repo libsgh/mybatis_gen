@@ -1,16 +1,15 @@
 package com.libsgh.mybatis.gen.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import com.libsgh.mybatis.gen.model.GenConfig;
 import com.libsgh.mybatis.gen.service.GenService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +40,11 @@ public class ApiController {
 
     @Resource
     private GenService genService;
+
+    @PostMapping("/api/prefix")
+    public Map<String, Object> getPrefix(@RequestParam String sql){
+        return genService.getPrefix(sql);
+    }
 
     /**
      * @Author Libs
@@ -106,7 +110,7 @@ public class ApiController {
         res.setCharacterEncoding("UTF-8");
 
         FileInputStream io = new FileInputStream(file);
-        IOUtils.copy(io, res.getOutputStream());
+        IoUtil.copy(io, res.getOutputStream());
         return null;
     }
 
