@@ -8,9 +8,14 @@
           rel="stylesheet">
     <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/vuetify/2.6.3/vuetify.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<v-app id="app">
+<v-app id="app" v-cloak>
     <v-app-bar
             app
             color="indigo"
@@ -51,7 +56,7 @@
                         <v-tab-item id="config">
                             <v-flex>
                             <v-container fluid fill-height>
-                                <v-row align="center" justify="center">
+                                <v-row align="center" justify="center" dense="dense">
                                     <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
                                         Mybatis生成模式：
                                     </v-col>
