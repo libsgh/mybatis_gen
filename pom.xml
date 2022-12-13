@@ -14,7 +14,7 @@
     <name>mybatis_gen</name>
     <description>mybatis_gen</description>
     <properties>
-        <java.version>19</java.version>
+        <java.version>18</java.version>
         <mybatis-spring-boot-starter.version>3.0.0</mybatis-spring-boot-starter.version>
         <mybatis-plus-generator.version>3.5.3</mybatis-plus-generator.version>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
