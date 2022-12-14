@@ -47,6 +47,7 @@ new Vue({
         msg: ``,
         content: default_content,
         files: [],
+        overlay: false,
     },
     methods: {
         async reset(){
@@ -78,6 +79,7 @@ new Vue({
             }
         },
         async gen (action, event) {
+            this.overlay = true;
             if(action == 'download'){
                 this.loading2 = true;
             }else{
@@ -105,6 +107,7 @@ new Vue({
                         localStorage.setItem('gen_content', JSON.stringify(this.content));
                         localStorage.setItem('gen_files', JSON.stringify(this.files));
                     }
+                    this.overlay = false;
             })
         },
         getPrefix(){

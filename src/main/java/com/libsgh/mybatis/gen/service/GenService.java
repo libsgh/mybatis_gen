@@ -1,14 +1,16 @@
 package com.libsgh.mybatis.gen.service;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.XmlUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.db.Db;
-import cn.hutool.db.sql.SqlUtil;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
@@ -23,24 +25,19 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
-import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
 
-import javax.sql.DataSource;
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * @ClassName GenService
- * @Description TODO
+ * @Description 代码生成服务
  * @Author Libs
  * @Date 2022/12/9 17:31
  * @Version 1.0
@@ -48,6 +45,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class GenService {
+
+    public static Map<String, Long> timedCache = new HashMap<>();
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
@@ -224,6 +223,7 @@ public class GenService {
             myBatisGenerator.generate(null);
             this.deleteTable(tables);
             Map<String, Object> data = this.handleFiles(id+"", path);
+            timedCache.put(path, DateUtil.offset(new Date(), DateField.HOUR, 24).getTime());
             result.put("data", data);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
