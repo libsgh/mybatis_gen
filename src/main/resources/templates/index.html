@@ -7,6 +7,7 @@
     <link href="https://cdnjs.loli.net/ajax/libs/MaterialDesign-Webfont/6.9.96/css/materialdesignicons.min.css"
           rel="stylesheet">
     <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/vuetify/2.6.3/vuetify.min.css" rel="stylesheet">
+    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/highlight.js/11.4.0/styles/rainbow.min.css" type="text/css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <style>
         [v-cloak] {
@@ -186,6 +187,7 @@
                                                 label="仅支持MySQL"
                                                 rows=9"
                                                 style="margin: 5px"
+                                                @input="getPrefix"
                                         ></v-textarea>
                                     </v-col>
                                 </v-row>
@@ -231,67 +233,82 @@
                         </v-tab-item>
                         <v-tab-item id="preview">
                             <v-row no-gutters>
-                                <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                <v-col cols="2" class="font-weight-bold d-flex align-center justify-center">
                                     Java Model：
                                 </v-col>
-                                <v-col cols="8">
-                                    <v-textarea
+                                <v-col cols="10">
+                                   <v-textarea
                                             solo
                                             v-model="content.java_model"
                                             label=""
                                             rows=20"
                                             style="margin: 5px"
+                                            v-clipboard:copy="content.java_model"
+                                            v-clipboard:success="onCopy"
+                                            v-clipboard:error="onError"
                                     ></v-textarea>
                                 </v-col>
                             </v-row>
                             <v-row no-gutters v-show="gen_config.is_gen_example=='Y'">
-                                <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                <v-col cols="2" class="font-weight-bold d-flex align-center justify-center">
                                     Java Example：
                                 </v-col>
-                                <v-col cols="8">
+                                <v-col cols="10">
                                     <v-textarea
                                             solo
                                             v-model="content.java_example"
                                             label=""
                                             rows=20"
                                             style="margin: 5px"
+                                            v-clipboard:copy="content.java_example"
+                                            v-clipboard:success="onCopy"
+                                            v-clipboard:error="onError"
                                     ></v-textarea>
                                 </v-col>
                             </v-row>
                             <v-row no-gutters>
-                                <v-col cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                <v-col cols="2" class="font-weight-bold d-flex align-center justify-center">
                                     Java Mapper：
                                 </v-col>
-                                <v-col cols="8">
+                                <v-col cols="10">
                                     <v-textarea
                                             solo
                                             v-model="content.java_mapper"
                                             rows=20"
                                             style="margin: 5px"
+                                            v-clipboard:copy="content.java_mapper"
+                                            v-clipboard:success="onCopy"
+                                            v-clipboard:error="onError"
                                     ></v-textarea>
                                 </v-col>
                             </v-row>
                             <v-row no-gutters>
-                                <v-col v-if="gen_config.gen_type=='MyBatis3DynamicSql'" cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                <v-col v-if="gen_config.gen_type=='MyBatis3DynamicSql'" cols="2" class="font-weight-bold d-flex align-center justify-center">
                                     动态SQL Support：
                                 </v-col>
-                                <v-col v-else cols="4" class="font-weight-bold d-flex align-center justify-center">
+                                <v-col v-else cols="2" class="font-weight-bold d-flex align-center justify-center">
                                     XML Mapper：
                                 </v-col>
-                                <v-col v-if="gen_config.gen_type=='MyBatis3DynamicSql'" cols="8">
+                                <v-col v-if="gen_config.gen_type=='MyBatis3DynamicSql'" cols="10">
                                     <v-textarea
                                             solo
                                             v-model="content.dynamic_sql"
                                             rows=20"
                                             style="margin: 5px"
+                                            v-clipboard:copy="content.dynamic_sql"
+                                            v-clipboard:success="onCopy"
+                                            v-clipboard:error="onError"
                                     ></v-textarea>
                                 </v-col>
-                                <v-col v-else cols="8">
+                                <v-col v-else cols="10">
                                     <v-textarea
                                             solo
                                             v-model="content.xml_mapper"
                                             rows=20"
                                             style="margin: 5px"
+                                            v-clipboard:copy="content.xml_mapper"
+                                            v-clipboard:success="onCopy"
+                                            v-clipboard:error="onError"
                                     ></v-textarea>
                                 </v-col>
                             </v-row>
@@ -364,6 +381,7 @@
 <script src="https://cdnjs.loli.net/ajax/libs/vue/2.7.7/vue.min.js"></script>
 <script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/vuetify/2.6.3/vuetify.min.js"></script>
 <script src="https://cdnjs.loli.net/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue-clipboard2/0.3.3/vue-clipboard.min.js" type="application/javascript"></script>
 <script src="/main.js"></script>
 </body>
 </html>

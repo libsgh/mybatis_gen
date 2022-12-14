@@ -42,7 +42,7 @@ public class ApiController {
     private GenService genService;
 
     @PostMapping("/api/prefix")
-    public Map<String, Object> getPrefix(@RequestParam String sql){
+    public Map<String, Object> getPrefix(String sql){
         return genService.getPrefix(sql);
     }
 

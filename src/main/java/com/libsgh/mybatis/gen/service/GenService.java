@@ -260,14 +260,15 @@ public class GenService {
                         size(file.length()).
                         modif_time(DateUtil.formatDateTime(DateUtil.convertTimeZone(new Date(file.lastModified()), ZoneId.of("Asia/Shanghai")))).build());
             }else{
+                String content = FileUtil.readUtf8String(file);
                 if(StrUtil.endWith(FileUtil.getPrefix(file.getName()), "DynamicSqlSupport")){
-                    contentMap.put("dynamic_sql", FileUtil.readUtf8String(file));
+                    contentMap.put("dynamic_sql", content);
                 }else if(StrUtil.endWith(FileUtil.getPrefix(file.getName()), "Mapper")){
-                    contentMap.put("java_mapper", FileUtil.readUtf8String(file));
+                    contentMap.put("java_mapper", content);
                 }else if(StrUtil.endWith(FileUtil.getPrefix(file.getName()), "Example")){
-                    contentMap.put("java_example", FileUtil.readUtf8String(file));
+                    contentMap.put("java_example", content);
                 }else{
-                    contentMap.put("java_model", FileUtil.readUtf8String(file));
+                    contentMap.put("java_model", content);
                 }
                 files.add(FileInfo.builder().
                         icon("file-code-outline").
@@ -348,9 +349,22 @@ public class GenService {
         if(tables.size() > 1){
             map.put("code", -1);
             map.put("msg", "检测到多条SQL语句");
+            map.put("data", "");
         }else{
             String tableName = tables.get(0);
-            StrUtil.subBefore(tableName, "_", true);
+            String prefix = "";
+            int separatorIndex = tableName.lastIndexOf("_");
+            int separatorIndex2 = tableName.lastIndexOf("-");
+            if(separatorIndex > 0){
+                prefix = StrUtil.subPre(tableName, separatorIndex + 1);
+            }else{
+                if(separatorIndex2 > 0){
+                    prefix = StrUtil.subPre(tableName, separatorIndex2 + 1);
+                }
+            }
+            map.put("code", 0);
+            map.put("msg", "ok");
+            map.put("data", prefix);
         }
         return map;
     }

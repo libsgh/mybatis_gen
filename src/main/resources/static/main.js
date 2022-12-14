@@ -1,5 +1,5 @@
-Vue.config.productionTip = false
-Vuetify.config.silent = true
+Vue.config.productionTip = false;
+Vuetify.config.silent = true;
 const default_config = {
     gen_type: 'MyBatis3',
     is_gen_example: 'N',
@@ -106,7 +106,32 @@ new Vue({
                         localStorage.setItem('gen_files', JSON.stringify(this.files));
                     }
             })
-        }
+        },
+        getPrefix(){
+            if(this.gen_config.sql != ''){
+                let formdata = new FormData();
+                formdata.append('sql', this.gen_config.sql);
+                axios.post('/api/prefix', formdata, {headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }}).then(response => {
+                    if(response.data.code < 0){
+                        this.msg = response.data.msg;
+                        this.snackbar = true;
+                    }else{
+                        if(response.data.data != ""){
+                            this.gen_config.ignore_prefix = response.data.data;
+                        }
+                    }
+                })
+            }
+        },
+        onCopy: function (e) {
+            this.msg = '内容已复制到剪切板';
+            this.snackbar = true;
+        },
+        onError: function (e) {
+            console.error("Copy error!", e);
+        },
     },
     watch: {
         loader () {
