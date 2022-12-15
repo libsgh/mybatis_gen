@@ -121,6 +121,7 @@ public class ApiController {
 
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
     public Map<String, Object> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
         Map<String, Object> result = new HashMap<>();
