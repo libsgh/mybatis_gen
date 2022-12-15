@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
  * @Date 2022/12/12 17:40
  * @Version 1.0
  */
-@RestController
+@Controller
 @Slf4j
 public class ApiController {
 
@@ -42,6 +44,7 @@ public class ApiController {
     private GenService genService;
 
     @PostMapping("/api/prefix")
+    @ResponseBody
     public Map<String, Object> getPrefix(String sql){
         return genService.getPrefix(sql);
     }
@@ -52,17 +55,18 @@ public class ApiController {
      * @Date 2022/12/9 17:10
      **/
     @PostMapping("/api/gen")
+    @ResponseBody
     public Map<String, Object> gen(@Valid @RequestBody GenConfig config){
         return genService.execGen(config);
     }
 
     @GetMapping("/api/download/{id}/{filename}")
-    @ResponseBody
-    public String down(HttpServletResponse res, @PathVariable String id, @PathVariable String filename) throws UnsupportedEncodingException {
+    public String down(HttpServletResponse res, @PathVariable String id, @PathVariable String filename, Model model) throws UnsupportedEncodingException {
         File file = new File(genPath + File.separator + id + File.separator + filename);
         if(!FileUtil.exist(file)){
-            res.setStatus(404);
-            return "文件不存在哦~";
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.value());
+            model.addAttribute("reasonPhrase", "File Not Found");
+            return "error";
         }
         res.setHeader("content-type", "application/octet-stream");
         res.setContentType("application/octet-stream");
@@ -95,11 +99,12 @@ public class ApiController {
     }
 
     @GetMapping(value = "/api/preview/{id}/{filename}")
-    public String preview(HttpServletResponse res, @PathVariable String id, @PathVariable String filename) throws Exception {
+    public String preview(HttpServletResponse res, @PathVariable String id, @PathVariable String filename, Model model) throws Exception {
         File file = new File(genPath + File.separator + id + File.separator + filename);
         if(!FileUtil.exist(file)){
-            res.setStatus(404);
-            return "文件不存在哦~";
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.value());
+            model.addAttribute("reasonPhrase", "File Not Found");
+            return "error";
         }
         try {
             Path path = Paths.get("." + FileUtil.getSuffix(file));
