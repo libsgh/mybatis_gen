@@ -86,28 +86,28 @@ new Vue({
                 this.loading1 = true;
             }
             event.preventDefault();
-            localStorage.setItem('gen_config_history', JSON.stringify(this.gen_config));
             await axios
                 .post('/api/gen', JSON.stringify(this.gen_config), {headers: {
                 'Content-Type': 'application/json; charset=utf-8'
             }}).then(response => {
-                    if(action == 'download'){
-                        this.loading2 = false;
-                    }else{
-                        this.loading1 = false;
-                    }
-                    if(response.data.code < 0){
-                        this.msg = response.data.msg;
-                        this.snackbar = true;
-                    }else{
-                        //success
-                        this.tab = action;
-                        this.content = response.data.data.content;
-                        this.files = response.data.data.files;
-                        localStorage.setItem('gen_content', JSON.stringify(this.content));
-                        localStorage.setItem('gen_files', JSON.stringify(this.files));
-                    }
-                    this.overlay = false;
+                localStorage.setItem('gen_config_history', JSON.stringify(this.gen_config));
+                if(action == 'download'){
+                    this.loading2 = false;
+                }else{
+                    this.loading1 = false;
+                }
+                if(response.data.code < 0){
+                    this.msg = response.data.msg;
+                    this.snackbar = true;
+                }else{
+                    //success
+                    this.tab = action;
+                    this.content = response.data.data.content;
+                    this.files = response.data.data.files;
+                    localStorage.setItem('gen_content', JSON.stringify(this.content));
+                    localStorage.setItem('gen_files', JSON.stringify(this.files));
+                }
+                this.overlay = false;
             })
         },
         getPrefix(){
