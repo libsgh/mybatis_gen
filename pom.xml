@@ -10,14 +10,12 @@
     </parent>
     <groupId>com.libsgh</groupId>
     <artifactId>mybatis_gen</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>mybatis_gen</name>
     <description>mybatis_gen</description>
     <properties>
         <java.version>18</java.version>
         <mybatis-spring-boot-starter.version>3.0.0</mybatis-spring-boot-starter.version>
-        <mybatis-plus-generator.version>3.5.3</mybatis-plus-generator.version>
-        <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <mybatis-generator-core.version>1.4.1</mybatis-generator-core.version>
         <mybatis-generator-lombok-plugin.version>1.0</mybatis-generator-lombok-plugin.version>
         <hutool-all.version>5.8.10</hutool-all.version>

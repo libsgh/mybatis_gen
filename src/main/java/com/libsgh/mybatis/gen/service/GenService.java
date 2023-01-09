@@ -145,6 +145,8 @@ public class GenService {
             pluginConfiguration.setConfigurationType("com.softwareloop.mybatis.generator.plugins.LombokPlugin");
             pluginConfiguration.addProperty("builder", "true");
             pluginConfiguration.addProperty("data", "true");
+            pluginConfiguration.addProperty("allArgsConstructor", "true");
+            pluginConfiguration.addProperty("noArgsConstructor", "true");
             context.addPluginConfiguration(pluginConfiguration);
         }
         if(config.hasPlugin("swagger")){
